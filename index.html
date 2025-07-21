@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Human Language Code (HLC) - Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3b82f6",
+              secondary: "#1e40af",
+              accent: "#06b6d4",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .code-block {
+        background: #1e293b;
+        color: #e2e8f0;
+      }
+      .hlc-keyword {
+        color: #60a5fa;
+      }
+      .hlc-string {
+        color: #34d399;
+      }
+      .hlc-comment {
+        color: #94a3b8;
+      }
+      .hlc-function {
+        color: #fbbf24;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-900" x-data="{ sidebarOpen: false }">
+    <!-- Mobile menu button -->
+    <div class="lg:hidden fixed top-4 left-4 z-50">
+      <button
+        @click="sidebarOpen = !sidebarOpen"
+        class="bg-primary text-white p-2 rounded-md shadow-lg"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          ></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Sidebar -->
+    <div
+      class="fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0"
+      :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+    >
+      <div class="flex flex-col h-full">
+        <!-- Logo/Header -->
+        <div class="p-6 border-b border-gray-200">
+          <h1 class="text-xl font-bold text-primary">HLC Docs</h1>
+          <p class="text-sm text-gray-600 mt-1">Human Language Code</p>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 p-4 space-y-2">
+          <a
+            href="#overview"
+            @click="sidebarOpen = false"
+            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors"
+          >
+            Overview
+          </a>
+          <a
+            href="#getting-started"
+            @click="sidebarOpen = false"
+            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors"
+          >
+            Getting Started
+          </a>
+          <a
+            href="#syntax"
+            @click="sidebarOpen = false"
+            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors"
+          >
+            Language Syntax
+          </a>
+          <a
+            href="#examples"
+            @click="sidebarOpen = false"
+            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors"
+          >
+            Code Examples
+          </a>
+          <a
+            href="#api-reference"
+            @click="sidebarOpen = false"
+            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors"
+          >
+            API Reference
+          </a>
+          <a
+            href="#faq"
+            @click="sidebarOpen = false"
+            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors"
+          >
+            FAQ
+          </a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Overlay for mobile -->
+    <div
+      x-show="sidebarOpen"
+      @click="sidebarOpen = false"
+      class="fixed inset-0 z-30 bg-black bg-opacity-50 lg:hidden"
+      x-transition:enter="transition-opacity ease-linear duration-300"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+      x-transition:leave="transition-opacity ease-linear duration-300"
+      x-transition:leave-start="opacity-100"
+      x-transition:leave-end="opacity-0"
+    ></div>
+
+    <!-- Main content -->
+    <div class="lg:ml-64 min-h-screen">
+      <main class="max-w-4xl mx-auto px-6 py-8">
+        <!-- Overview Section -->
+        <section id="overview" class="mb-16">
+          <div
+            class="bg-gradient-to-r from-primary to-secondary text-white rounded-lg p-8 mb-8"
+          >
+            <h1 class="text-4xl font-bold mb-4">Human Language Code (HLC)</h1>
+            <p class="text-xl opacity-90">
+              The programming language that bridges the gap between human
+              thought and machine execution
+            </p>
+          </div>
+
+          <div class="prose max-w-none">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">
+              What is HLC?
+            </h2>
+            <p class="text-gray-600 mb-4">
+              Human Language Code (HLC) is a revolutionary programming paradigm
+              that allows developers to write code using natural language
+              constructs while maintaining the precision and efficiency of
+              traditional programming languages.
+            </p>
+            <div class="grid md:grid-cols-3 gap-6 mt-8">
+              <div class="bg-white p-6 rounded-lg shadow-md">
+                <div
+                  class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4"
+                >
+                  <svg
+                    class="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    ></path>
+                  </svg>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Intuitive</h3>
+                <p class="text-gray-600">
+                  Write code that reads like natural language, making it
+                  accessible to both technical and non-technical users.
+                </p>
+              </div>
+              <div class="bg-white p-6 rounded-lg shadow-md">
+                <div
+                  class="w-12 h-12 bg-accent rounded-lg flex items-center justify-center mb-4"
+                >
+                  <svg
+                    class="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Powerful</h3>
+                <p class="text-gray-600">
+                  Maintain full computational power while expressing complex
+                  logic in human-readable form.
+                </p>
+              </div>
+              <div class="bg-white p-6 rounded-lg shadow-md">
+                <div
+                  class="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center mb-4"
+                >
+                  <svg
+                    class="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                    ></path>
+                  </svg>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Efficient</h3>
+                <p class="text-gray-600">
+                  Compile to optimized machine code while preserving the
+                  readability of the source.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Getting Started Section -->
+        <section id="getting-started" class="mb-16">
+          <h2 class="text-3xl font-bold mb-6 text-gray-800">Getting Started</h2>
+
+          <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h3 class="text-xl font-semibold mb-4">Installation</h3>
+            <div class="code-block rounded-lg p-4 mb-4">
+              <code class="text-sm">
+                # Install HLC compiler<br />
+                curl -sSL https://get.hlc-lang.org | bash<br /><br />
+                # Verify installation<br />
+                hlc --version
+              </code>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-semibold mb-4">Your First HLC Program</h3>
+            <div class="code-block rounded-lg p-4 mb-4">
+              <code class="text-sm">
+                <span class="hlc-comment">// hello.hlc</span><br />
+                <span class="hlc-keyword">when</span>
+                <span class="hlc-keyword">program starts</span>:<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
+                  >display</span
+                >
+                <span class="hlc-string">"Hello, World!"</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword"
+                  >end program</span
+                >
+              </code>
+            </div>
+            <p class="text-gray-600 mb-4">Compile and run:</p>
+            <div class="code-block rounded-lg p-4">
+              <code class="text-sm">
+                hlc compile hello.hlc<br />
+                ./hello
+              </code>
+            </div>
+          </div>
+        </section>
+
+        <!-- Language Syntax Section -->
+        <section id="syntax" class="mb-16">
+          <h2 class="text-3xl font-bold mb-6 text-gray-800">Language Syntax</h2>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-lg shadow-md p-6">
+              <h3 class="text-xl font-semibold mb-4">Variables & Data Types</h3>
+              <div class="code-block rounded-lg p-4">
+                <code class="text-sm">
+                  <span class="hlc-comment">// Variable declarations</span
+                  ><br />
+                  <span class="hlc-keyword">let</span> name
+                  <span class="hlc-keyword">be</span>
+                  <span class="hlc-string">"Alice"</span><br />
+                  <span class="hlc-keyword">let</span> age
+                  <span class="hlc-keyword">be</span> 25<br />
+                  <span class="hlc-keyword">let</span> is_active
+                  <span class="hlc-keyword">be</span>
+                  <span class="hlc-keyword">true</span><br /><br />
+                  <span class="hlc-comment">// Lists and objects</span><br />
+                  <span class="hlc-keyword">let</span> numbers
+                  <span class="hlc-keyword">be</span> [1, 2, 3, 4, 5]<br />
+                  <span class="hlc-keyword">let</span> person
+                  <span class="hlc-keyword">be</span> {<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;name:
+                  <span class="hlc-string">"Bob"</span>,<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;age: 30<br />
+                  }
+                </code>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+              <h3 class="text-xl font-semibold mb-4">Control Flow</h3>
+              <div class="code-block rounded-lg p-4">
+                <code class="text-sm">
+                  <span class="hlc-comment">// Conditional statements</span
+                  ><br />
+                  <span class="hlc-keyword">if</span> age
+                  <span class="hlc-keyword">is greater than</span> 18:<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
+                    >display</span
+                  >
+                  <span class="hlc-string">"Adult"</span><br />
+                  <span class="hlc-keyword">otherwise if</span> age
+                  <span class="hlc-keyword">is</span> 18:<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
+                    >display</span
+                  >
+                  <span class="hlc-string">"Just turned adult"</span><br />
+                  <span class="hlc-keyword">otherwise</span>:<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
+                    >display</span
+                  >
+                  <span class="hlc-string">"Minor"</span><br /><br />
+                  <span class="hlc-comment">// Loops</span><br />
+                  <span class="hlc-keyword">for each</span> number
+                  <span class="hlc-keyword">in</span> numbers:<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
+                    >display</span
+                  >
+                  number
+                </code>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+              <h3 class="text-xl font-semibold mb-4">Functions</h3>
+              <div class="code-block rounded-lg p-4">
+                <code class="text-sm">
+                  <span class="hlc-comment">// Function definition</span><br />
+                  <span class="hlc-keyword">define function</span>
+                  <span class="hlc-function">calculate_area</span><br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword"
+                    >that takes</span
+                  >
+                  width <span class="hlc-keyword">and</span> height:<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword"
+                    >return</span
+                  >
+                  width
+                  <span class="hlc-keyword">multiplied by</span>
+                  height<br /><br />
+                  <span class="hlc-comment">// Function call</span><br />
+                  <span class="hlc-keyword">let</span> area
+                  <span class="hlc-keyword">be</span>
+                  <span class="hlc-function">calculate_area</span>(10, 5)<br />
+                  <span class="hlc-function">display</span>
+                  <span class="hlc-string">"Area is"</span> area
+                </code>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+              <h3 class="text-xl font-semibold mb-4">Error Handling</h3>
+              <div class="code-block rounded-lg p-4">
+                <code class="text-sm">
+                  <span class="hlc-keyword">try to</span>:<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword">let</span>
+                  result <span class="hlc-keyword">be</span> 10
+                  <span class="hlc-keyword">divided by</span> 0<br />
+                  <span class="hlc-keyword">if something goes wrong</span
+                  >:<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
+                    >display</span
+                  >
+                  <span class="hlc-string">"Cannot divide by zero"</span><br />
+                  <span class="hlc-keyword">always do</span>:<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
+                    >display</span
+                  >
+                  <span class="hlc-string">"Operation completed"</span>
+                </code>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Code Examples Section -->
+        <section id="examples" class="mb-16">
+          <h2 class="text-3xl font-bold mb-6 text-gray-800">Code Examples</h2>
+
+          <div class="space-y-6">
+            <div class="bg-white rounded-lg shadow-md p-6">
+              <h3 class="text-xl font-semibold mb-4">
+                Example 1: Todo List Manager
+              </h3>
+              <div class="code-block rounded-lg p-4">
+                <code class="text-sm">
+                  <span class="hlc-comment">// Todo list management system</span
+                  ><br />
+                  <span class="hlc-keyword">let</span> todo_list
+                  <span class="hlc-keyword">be</span> []<br /><br />
+                  <span class="hlc-keyword">define function</span>
+                  <span class="hlc-function">add_task</span>
+                  <span class="hlc-keyword">that takes</span> task:<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword">add</span>
+                  task <span class="hlc-keyword">to</span> todo_list<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
+                    >display</span
+                  >
+                  <span class="hlc-string">"Task added:"</span> task<br /><br />
+                  <span class="hlc-keyword">define function</span>
+                  <span class="hlc-function">show_tasks</span>:<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword">if</span>
+                  todo_list <span class="hlc-keyword">is empty</span>:<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    class="hlc-function"
+                    >display</span
+                  >
+                  <span class="hlc-string">"No tasks yet!"</span><br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword"
+                    >otherwise</span
+                  >:<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    class="hlc-function"
+                    >display</span
+                  >
+                  <span class="hlc-string">"Your tasks:"</span><br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    class="hlc-keyword"
+                    >for each</span
+                  >
+                  task <span class="hlc-keyword">in</span> todo_list:<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                    class="hlc-function"
+                    >display</span
+                  >
+                  <span class="hlc-string">"- "</span> task<br /><br />
+                  <span class="hlc-comment">// Usage</span><br />
+                  <span class="hlc-function">add_task</span>(<span
+                    class="hlc-string"
+                    >"Buy groceries"</span
+                  >)<br />
+                  <span class="hlc-function">add_task</span>(<span
+                    class="hlc-string"
+                    >"Walk the dog"</span
+                  >)<br />
+                  <span class="hlc-function">show_tasks</span>()
+                </code>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+              <h3 class="text-xl font-semibold mb-4">
+                Example 2: Data Processing
+              </h3>
+              <div class="code-block rounded-lg p-4">
+                <code class="text-sm">
+                  <span class="hlc-comment">// Process sales data</span><br />
+                  <span class="hlc-keyword">let</span> sales_data
+                  <span class="hlc-keyword">be</span> [<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;{product:
+                  <span class="hlc-string">"Laptop"</span>, price: 999,
+                  quantity: 5},<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;{product:
+                  <span class="hlc-string">"Mouse"</span>, price: 25, quantity:
+                  20},<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;{product:
+                  <span class="hlc-string">"Keyboard"</span>, price: 75,
+                  quantity: 15}<br />
+                  ]<br /><br />
+                  <span class="hlc-keyword">let</span> total_revenue
+                  <span class="hlc-keyword">be</span> 0<br /><br />
+                  <span class="hlc-keyword">for each</span> sale
+                  <span class="hlc-keyword">in</span> sales_data:<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword">let</span>
+                  item_revenue <span class="hlc-keyword">be</span> sale.price
+                  <span class="hlc-keyword">multiplied by</span>
+                  sale.quantity<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword">add</span>
+                  item_revenue
+                  <span class="hlc-keyword">to</span> total_revenue<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
+                    >display</span
+                  >
+                  sale.product
+                  <span class="hlc-string">": $"</span> item_revenue<br /><br />
+                  <span class="hlc-function">display</span>
+                  <span class="hlc-string">"Total Revenue: $"</span>
+                  total_revenue
+                </code>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- API Reference Section -->
+        <section id="api-reference" class="mb-16">
+          <h2 class="text-3xl font-bold mb-6 text-gray-800">API Reference</h2>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-lg shadow-md p-6">
+              <h3 class="text-xl font-semibold mb-4">Built-in Functions</h3>
+              <div class="space-y-4">
+                <div class="border-l-4 border-primary pl-4">
+                  <h4 class="font-semibold text-primary">display(value)</h4>
+                  <p class="text-gray-600 text-sm">
+                    Outputs a value to the console or screen
+                  </p>
+                </div>
+                <div class="border-l-4 border-primary pl-4">
+                  <h4 class="font-semibold text-primary">ask(question)</h4>
+                  <p class="text-gray-600 text-sm">
+                    Prompts user for input with a question
+                  </p>
+                </div>
+                <div class="border-l-4 border-primary pl-4">
+                  <h4 class="font-semibold text-primary">
+                    length_of(collection)
+                  </h4>
+                  <p class="text-gray-600 text-sm">
+                    Returns the number of items in a list or string
+                  </p>
+                </div>
+                <div class="border-l-4 border-primary pl-4">
+                  <h4 class="font-semibold text-primary">
+                    random_number(min, max)
+                  </h4>
+                  <p class="text-gray-600 text-sm">
+                    Generates a random number between min and max
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+              <h3 class="text-xl font-semibold mb-4">String Operations</h3>
+              <div class="space-y-4">
+                <div class="border-l-4 border-accent pl-4">
+                  <h4 class="font-semibold text-accent">text.uppercase</h4>
+                  <p class="text-gray-600 text-sm">
+                    Converts text to uppercase
+                  </p>
+                </div>
+                <div class="border-l-4 border-accent pl-4">
+                  <h4 class="font-semibold text-accent">text.lowercase</h4>
+                  <p class="text-gray-600 text-sm">
+                    Converts text to lowercase
+                  </p>
+                </div>
+                <div class="border-l-4 border-accent pl-4">
+                  <h4 class="font-semibold text-accent">
+                    text contains "substring"
+                  </h4>
+                  <p class="text-gray-600 text-sm">
+                    Checks if text contains a substring
+                  </p>
+                </div>
+                <div class="border-l-4 border-accent pl-4">
+                  <h4 class="font-semibold text-accent">
+                    split text by "delimiter"
+                  </h4>
+                  <p class="text-gray-600 text-sm">
+                    Splits text into a list using delimiter
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+              <h3 class="text-xl font-semibold mb-4">List Operations</h3>
+              <div class="space-y-4">
+                <div class="border-l-4 border-secondary pl-4">
+                  <h4 class="font-semibold text-secondary">add item to list</h4>
+                  <p class="text-gray-600 text-sm">
+                    Appends an item to the end of a list
+                  </p>
+                </div>
+                <div class="border-l-4 border-secondary pl-4">
+                  <h4 class="font-semibold text-secondary">
+                    remove item from list
+                  </h4>
+                  <p class="text-gray-600 text-sm">
+                    Removes the first occurrence of item
+                  </p>
+                </div>
+                <div class="border-l-4 border-secondary pl-4">
+                  <h4 class="font-semibold text-secondary">sort list</h4>
+                  <p class="text-gray-600 text-sm">
+                    Sorts list items in ascending order
+                  </p>
+                </div>
+                <div class="border-l-4 border-secondary pl-4">
+                  <h4 class="font-semibold text-secondary">reverse list</h4>
+                  <p class="text-gray-600 text-sm">
+                    Reverses the order of list items
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+              <h3 class="text-xl font-semibold mb-4">Math Operations</h3>
+              <div class="space-y-4">
+                <div class="border-l-4 border-green-500 pl-4">
+                  <h4 class="font-semibold text-green-600">a plus b</h4>
+                  <p class="text-gray-600 text-sm">Addition operation</p>
+                </div>
+                <div class="border-l-4 border-green-500 pl-4">
+                  <h4 class="font-semibold text-green-600">a minus b</h4>
+                  <p class="text-gray-600 text-sm">Subtraction operation</p>
+                </div>
+                <div class="border-l-4 border-green-500 pl-4">
+                  <h4 class="font-semibold text-green-600">
+                    a multiplied by b
+                  </h4>
+                  <p class="text-gray-600 text-sm">Multiplication operation</p>
+                </div>
+                <div class="border-l-4 border-green-500 pl-4">
+                  <h4 class="font-semibold text-green-600">a divided by b</h4>
+                  <p class="text-gray-600 text-sm">Division operation</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="mb-16">
+          <h2 class="text-3xl font-bold mb-6 text-gray-800">
+            Frequently Asked Questions
+          </h2>
+
+          <div class="space-y-4" x-data="{ openFaq: null }">
+            <div class="bg-white rounded-lg shadow-md">
+              <button
+                @click="openFaq = openFaq === 1 ? null : 1"
+                class="w-full text-left p-6 focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <div class="flex justify-between items-center">
+                  <h3 class="text-lg font-semibold">
+                    What makes HLC different from other programming languages?
+                  </h3>
+                  <svg
+                    class="w-5 h-5 transform transition-transform"
+                    :class="openFaq === 1 ? 'rotate-180' : ''"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+              <div x-show="openFaq === 1" x-transition class="px-6 pb-6">
+                <p class="text-gray-600">
+                  HLC bridges the gap between natural language and code
+                  execution. Unlike traditional programming languages that
+                  require learning specific syntax, HLC allows you to express
+                  logic in human-readable terms while maintaining computational
+                  precision and performance.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md">
+              <button
+                @click="openFaq = openFaq === 2 ? null : 2"
+                class="w-full text-left p-6 focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <div class="flex justify-between items-center">
+                  <h3 class="text-lg font-semibold">
+                    Is HLC suitable for production applications?
+                  </h3>
+                  <svg
+                    class="w-5 h-5 transform transition-transform"
+                    :class="openFaq === 2 ? 'rotate-180' : ''"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+              <div x-show="openFaq === 2" x-transition class="px-6 pb-6">
+                <p class="text-gray-600">
+                  Yes! HLC compiles to optimized machine code and includes
+                  robust error handling, type safety, and performance
+                  optimizations. Many companies are already using HLC for
+                  production systems, particularly in domains where code
+                  readability and maintainability are crucial.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md">
+              <button
+                @click="openFaq = openFaq === 3 ? null : 3"
+                class="w-full text-left p-6 focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <div class="flex justify-between items-center">
+                  <h3 class="text-lg font-semibold">
+                    How does HLC handle performance compared to traditional
+                    languages?
+                  </h3>
+                  <svg
+                    class="w-5 h-5 transform transition-transform"
+                    :class="openFaq === 3 ? 'rotate-180' : ''"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+              <div x-show="openFaq === 3" x-transition class="px-6 pb-6">
+                <p class="text-gray-600">
+                  HLC's compiler performs advanced optimizations during the
+                  compilation process. While the source code is human-readable,
+                  the compiled output is highly optimized machine code that
+                  performs comparably to C++ or Rust in most scenarios.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md">
+              <button
+                @click="openFaq = openFaq === 4 ? null : 4"
+                class="w-full text-left p-6 focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <div class="flex justify-between items-center">
+                  <h3 class="text-lg font-semibold">
+                    Can I integrate HLC with existing codebases?
+                  </h3>
+                  <svg
+                    class="w-5 h-5 transform transition-transform"
+                    :class="openFaq === 4 ? 'rotate-180' : ''"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+              <div x-show="openFaq === 4" x-transition class="px-6 pb-6">
+                <p class="text-gray-600">
+                  Absolutely! HLC provides foreign function interfaces (FFI) for
+                  popular languages like Python, JavaScript, C++, and Java. You
+                  can gradually migrate existing code or use HLC for new
+                  features while maintaining compatibility with your current
+                  systems.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md">
+              <button
+                @click="openFaq = openFaq === 5 ? null : 5"
+                class="w-full text-left p-6 focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <div class="flex justify-between items-center">
+                  <h3 class="text-lg font-semibold">
+                    Where can I get help and support?
+                  </h3>
+                  <svg
+                    class="w-5 h-5 transform transition-transform"
+                    :class="openFaq === 5 ? 'rotate-180' : ''"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+              <div x-show="openFaq === 5" x-transition class="px-6 pb-6">
+                <p class="text-gray-600">
+                  Join our vibrant community! We have an active Discord server,
+                  GitHub discussions, and comprehensive documentation. Our team
+                  also provides enterprise support for commercial users. Visit
+                  our community page for links to all support channels.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
+
