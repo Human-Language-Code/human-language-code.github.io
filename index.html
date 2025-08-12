@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Human Language Code (HLC) - Documentation</title>
+    <title>
+      Human Language Code (HLC) - JSON-Based Software Specification Language
+    </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script
       src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
@@ -11,12 +13,45 @@
     ></script>
     <script>
       tailwind.config = {
+        darkMode: "class",
         theme: {
           extend: {
             colors: {
-              primary: "#3b82f6",
-              secondary: "#1e40af",
-              accent: "#06b6d4",
+              primary: "#166534",
+              secondary: "#15803d",
+              accent: "#22c55e",
+              forest: {
+                50: "#f0fdf4",
+                100: "#dcfce7",
+                200: "#bbf7d0",
+                300: "#86efac",
+                400: "#4ade80",
+                500: "#22c55e",
+                600: "#16a34a",
+                700: "#15803d",
+                800: "#166534",
+                900: "#14532d",
+                950: "#052e16",
+              },
+            },
+            animation: {
+              "fade-in": "fadeIn 0.5s ease-in-out",
+              "slide-up": "slideUp 0.3s ease-out",
+              glow: "glow 2s ease-in-out infinite alternate",
+            },
+            keyframes: {
+              fadeIn: {
+                "0%": { opacity: "0", transform: "translateY(10px)" },
+                "100%": { opacity: "1", transform: "translateY(0)" },
+              },
+              slideUp: {
+                "0%": { transform: "translateY(10px)", opacity: "0" },
+                "100%": { transform: "translateY(0)", opacity: "1" },
+              },
+              glow: {
+                "0%": { boxShadow: "0 0 5px #22c55e" },
+                "100%": { boxShadow: "0 0 20px #22c55e, 0 0 30px #22c55e" },
+              },
             },
           },
         },
@@ -24,32 +59,122 @@
     </script>
     <style>
       .code-block {
-        background: #1e293b;
-        color: #e2e8f0;
+        background: #0a0a0a;
+        border: 1px solid #374151;
+        color: #e5e7eb;
       }
-      .hlc-keyword {
-        color: #60a5fa;
+      .json-key {
+        color: #22c55e;
       }
-      .hlc-string {
-        color: #34d399;
+      .json-string {
+        color: #4ade80;
       }
-      .hlc-comment {
-        color: #94a3b8;
+      .json-value {
+        color: #86efac;
       }
-      .hlc-function {
-        color: #fbbf24;
+      .json-comment {
+        color: #6b7280;
+      }
+      .json-bracket {
+        color: #d1d5db;
+      }
+      .gradient-forest {
+        background: linear-gradient(
+          135deg,
+          #166534 0%,
+          #15803d 50%,
+          #22c55e 100%
+        );
+      }
+      .gradient-forest-subtle {
+        background: linear-gradient(
+          135deg,
+          rgba(22, 101, 52, 0.1) 0%,
+          rgba(21, 128, 61, 0.1) 100%
+        );
+      }
+      .pattern-grid {
+        background-image: linear-gradient(
+            rgba(34, 197, 94, 0.1) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(34, 197, 94, 0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
+      .glass-effect {
+        backdrop-filter: blur(10px);
+        background: rgba(0, 0, 0, 0.7);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+      }
+      .hover-lift {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .hover-lift:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      }
+      .theme-transition {
+        transition: background-color 0.3s ease, border-color 0.3s ease,
+          color 0.3s ease;
+      }
+      .neon-glow {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .neon-glow:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
       }
     </style>
   </head>
-  <body class="bg-gray-50 text-gray-900" x-data="{ sidebarOpen: false }">
+  <body
+    class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 theme-transition"
+    x-data="{ sidebarOpen: false, darkMode: true }"
+    x-init="darkMode = localStorage.getItem('darkMode') === 'false' ? false : true; $watch('darkMode', val => { localStorage.setItem('darkMode', val); if(val) { document.documentElement.classList.add('dark') } else { document.documentElement.classList.remove('dark') } })"
+  >
+    <!-- Theme Switcher -->
+    <div class="fixed top-4 right-4 z-50">
+      <button
+        @click="darkMode = !darkMode"
+        class="glass-effect p-3 rounded-full hover:bg-opacity-80 transition-all duration-300 neon-glow"
+      >
+        <svg
+          x-show="darkMode"
+          class="w-5 h-5 text-accent"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+          ></path>
+        </svg>
+        <svg
+          x-show="!darkMode"
+          class="w-5 h-5 text-accent"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+
     <!-- Mobile menu button -->
     <div class="lg:hidden fixed top-4 left-4 z-50">
       <button
         @click="sidebarOpen = !sidebarOpen"
-        class="bg-primary text-white p-2 rounded-md shadow-lg"
+        class="glass-effect p-3 rounded-full hover:bg-opacity-80 transition-all duration-300 neon-glow"
       >
         <svg
-          class="w-6 h-6"
+          class="w-6 h-6 text-accent"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -66,61 +191,116 @@
 
     <!-- Sidebar -->
     <div
-      class="fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0"
+      class="fixed inset-y-0 left-0 z-40 w-80 glass-effect transform transition-transform duration-300 ease-in-out lg:translate-x-0"
       :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
     >
       <div class="flex flex-col h-full">
         <!-- Logo/Header -->
-        <div class="p-6 border-b border-gray-200">
-          <h1 class="text-xl font-bold text-primary">HLC Docs</h1>
-          <p class="text-sm text-gray-600 mt-1">Human Language Code</p>
+        <div class="p-6 border-b border-forest-800 gradient-forest">
+          <div class="flex items-center space-x-4">
+            <div
+              class="w-12 h-12 bg-black bg-opacity-30 rounded-xl flex items-center justify-center shadow-lg backdrop-blur-sm"
+            >
+              <span class="text-white font-bold text-xl">{ }</span>
+            </div>
+            <div>
+              <h1 class="text-2xl font-bold text-white">HLC</h1>
+              <p class="text-sm text-white/80">Human Language Code</p>
+            </div>
+          </div>
         </div>
 
         <!-- Navigation -->
-        <nav class="flex-1 p-4 space-y-2">
+        <nav class="flex-1 p-6 space-y-2 overflow-y-auto">
           <a
             href="#overview"
             @click="sidebarOpen = false"
-            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors"
+            class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-forest-800 hover:bg-opacity-30 hover:text-accent transition-all duration-200 font-medium border border-transparent hover:border-forest-700"
           >
-            Overview
+            <span class="flex items-center space-x-3">
+              <span class="text-lg">📋</span>
+              <span>Overview</span>
+            </span>
           </a>
           <a
-            href="#getting-started"
+            href="#core-concepts"
             @click="sidebarOpen = false"
-            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors"
+            class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-forest-800 hover:bg-opacity-30 hover:text-accent transition-all duration-200 border border-transparent hover:border-forest-700"
           >
-            Getting Started
+            <span class="flex items-center space-x-3">
+              <span class="text-lg">🏗️</span>
+              <span>Core Concepts</span>
+            </span>
           </a>
           <a
-            href="#syntax"
+            href="#object-types"
             @click="sidebarOpen = false"
-            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors"
+            class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-forest-800 hover:bg-opacity-30 hover:text-accent transition-all duration-200 border border-transparent hover:border-forest-700"
           >
-            Language Syntax
+            <span class="flex items-center space-x-3">
+              <span class="text-lg">🧩</span>
+              <span>Object Types</span>
+            </span>
+          </a>
+          <a
+            href="#structure"
+            @click="sidebarOpen = false"
+            class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-forest-800 hover:bg-opacity-30 hover:text-accent transition-all duration-200 border border-transparent hover:border-forest-700"
+          >
+            <span class="flex items-center space-x-3">
+              <span class="text-lg">🌳</span>
+              <span>Structure & Linking</span>
+            </span>
           </a>
           <a
             href="#examples"
             @click="sidebarOpen = false"
-            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors"
+            class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-forest-800 hover:bg-opacity-30 hover:text-accent transition-all duration-200 border border-transparent hover:border-forest-700"
           >
-            Code Examples
+            <span class="flex items-center space-x-3">
+              <span class="text-lg">💡</span>
+              <span>Examples</span>
+            </span>
           </a>
           <a
-            href="#api-reference"
+            href="#use-cases"
             @click="sidebarOpen = false"
-            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors"
+            class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-forest-800 hover:bg-opacity-30 hover:text-accent transition-all duration-200 border border-transparent hover:border-forest-700"
           >
-            API Reference
+            <span class="flex items-center space-x-3">
+              <span class="text-lg">🎯</span>
+              <span>Use Cases</span>
+            </span>
+          </a>
+          <a
+            href="#best-practices"
+            @click="sidebarOpen = false"
+            class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-forest-800 hover:bg-opacity-30 hover:text-accent transition-all duration-200 border border-transparent hover:border-forest-700"
+          >
+            <span class="flex items-center space-x-3">
+              <span class="text-lg">⭐</span>
+              <span>Best Practices</span>
+            </span>
           </a>
           <a
             href="#faq"
             @click="sidebarOpen = false"
-            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors"
+            class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-forest-800 hover:bg-opacity-30 hover:text-accent transition-all duration-200 border border-transparent hover:border-forest-700"
           >
-            FAQ
+            <span class="flex items-center space-x-3">
+              <span class="text-lg">❓</span>
+              <span>FAQ</span>
+            </span>
           </a>
         </nav>
+
+        <!-- Footer -->
+        <div class="p-6 border-t border-forest-800">
+          <div class="text-xs text-gray-400 text-center">
+            <p class="font-semibold">HLC Specification v1.0</p>
+            <p class="mt-1 text-gray-500">JSON-Based Software Specs</p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -129,510 +309,1329 @@
       x-show="sidebarOpen"
       @click="sidebarOpen = false"
       class="fixed inset-0 z-30 bg-black bg-opacity-50 lg:hidden"
-      x-transition:enter="transition-opacity ease-linear duration-300"
-      x-transition:enter-start="opacity-0"
-      x-transition:enter-end="opacity-100"
-      x-transition:leave="transition-opacity ease-linear duration-300"
-      x-transition:leave-start="opacity-100"
-      x-transition:leave-end="opacity-0"
+      x-transition
     ></div>
 
     <!-- Main content -->
-    <div class="lg:ml-64 min-h-screen">
-      <main class="max-w-4xl mx-auto px-6 py-8">
-        <!-- Overview Section -->
-        <section id="overview" class="mb-16">
+    <div class="lg:ml-80 min-h-screen">
+      <main class="max-w-6xl mx-auto px-8 py-12">
+        <!-- Hero Section -->
+        <section id="overview" class="mb-20 animate-fade-in">
           <div
-            class="bg-gradient-to-r from-primary to-secondary text-white rounded-lg p-8 mb-8"
+            class="relative overflow-hidden gradient-forest rounded-3xl p-12 mb-12 text-white pattern-grid"
           >
-            <h1 class="text-4xl font-bold mb-4">Human Language Code (HLC)</h1>
-            <p class="text-xl opacity-90">
-              The programming language that bridges the gap between human
-              thought and machine execution
-            </p>
-          </div>
-
-          <div class="prose max-w-none">
-            <h2 class="text-2xl font-semibold mb-4 text-gray-800">
-              What is HLC?
-            </h2>
-            <p class="text-gray-600 mb-4">
-              Human Language Code (HLC) is a revolutionary programming paradigm
-              that allows developers to write code using natural language
-              constructs while maintaining the precision and efficiency of
-              traditional programming languages.
-            </p>
-            <div class="grid md:grid-cols-3 gap-6 mt-8">
-              <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="relative z-10">
+              <div class="flex items-center space-x-6 mb-8">
                 <div
-                  class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4"
+                  class="w-20 h-20 bg-black bg-opacity-30 rounded-2xl flex items-center justify-center shadow-2xl backdrop-blur-sm"
                 >
-                  <svg
-                    class="w-6 h-6 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    ></path>
-                  </svg>
+                  <span class="text-white font-bold text-3xl">{ }</span>
                 </div>
-                <h3 class="text-lg font-semibold mb-2">Intuitive</h3>
-                <p class="text-gray-600">
-                  Write code that reads like natural language, making it
-                  accessible to both technical and non-technical users.
-                </p>
-              </div>
-              <div class="bg-white p-6 rounded-lg shadow-md">
-                <div
-                  class="w-12 h-12 bg-accent rounded-lg flex items-center justify-center mb-4"
-                >
-                  <svg
-                    class="w-6 h-6 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    ></path>
-                  </svg>
+                <div>
+                  <h1 class="text-5xl font-bold mb-3 text-white">
+                    Human Language Code
+                  </h1>
+                  <p class="text-xl opacity-90 text-white">
+                    JSON-Based Software Specification Intermediate Language
+                  </p>
                 </div>
-                <h3 class="text-lg font-semibold mb-2">Powerful</h3>
-                <p class="text-gray-600">
-                  Maintain full computational power while expressing complex
-                  logic in human-readable form.
-                </p>
               </div>
-              <div class="bg-white p-6 rounded-lg shadow-md">
-                <div
-                  class="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center mb-4"
+              <p
+                class="text-lg opacity-90 max-w-4xl leading-relaxed text-white"
+              >
+                HLC bridges the gap between human-readable requirements and
+                structured programming by defining software specifications using
+                hierarchical JSON objects. Transform vague ideas into
+                machine-readable specifications with unprecedented clarity and
+                precision.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-8 mb-12">
+            <div
+              class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover-lift theme-transition"
+            >
+              <div
+                class="w-16 h-16 bg-gradient-to-br from-forest-500 to-forest-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg"
+              >
+                <svg
+                  class="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <svg
-                    class="w-6 h-6 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                    ></path>
-                  </svg>
-                </div>
-                <h3 class="text-lg font-semibold mb-2">Efficient</h3>
-                <p class="text-gray-600">
-                  Compile to optimized machine code while preserving the
-                  readability of the source.
-                </p>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  ></path>
+                </svg>
               </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Getting Started Section -->
-        <section id="getting-started" class="mb-16">
-          <h2 class="text-3xl font-bold mb-6 text-gray-800">Getting Started</h2>
-
-          <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h3 class="text-xl font-semibold mb-4">Installation</h3>
-            <div class="code-block rounded-lg p-4 mb-4">
-              <code class="text-sm">
-                # Install HLC compiler<br />
-                curl -sSL https://get.hlc-lang.org | bash<br /><br />
-                # Verify installation<br />
-                hlc --version
-              </code>
-            </div>
-          </div>
-
-          <div class="bg-white rounded-lg shadow-md p-6">
-            <h3 class="text-xl font-semibold mb-4">Your First HLC Program</h3>
-            <div class="code-block rounded-lg p-4 mb-4">
-              <code class="text-sm">
-                <span class="hlc-comment">// hello.hlc</span><br />
-                <span class="hlc-keyword">when</span>
-                <span class="hlc-keyword">program starts</span>:<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
-                  >display</span
-                >
-                <span class="hlc-string">"Hello, World!"</span><br />
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword"
-                  >end program</span
-                >
-              </code>
-            </div>
-            <p class="text-gray-600 mb-4">Compile and run:</p>
-            <div class="code-block rounded-lg p-4">
-              <code class="text-sm">
-                hlc compile hello.hlc<br />
-                ./hello
-              </code>
-            </div>
-          </div>
-        </section>
-
-        <!-- Language Syntax Section -->
-        <section id="syntax" class="mb-16">
-          <h2 class="text-3xl font-bold mb-6 text-gray-800">Language Syntax</h2>
-
-          <div class="grid md:grid-cols-2 gap-6">
-            <div class="bg-white rounded-lg shadow-md p-6">
-              <h3 class="text-xl font-semibold mb-4">Variables & Data Types</h3>
-              <div class="code-block rounded-lg p-4">
-                <code class="text-sm">
-                  <span class="hlc-comment">// Variable declarations</span
-                  ><br />
-                  <span class="hlc-keyword">let</span> name
-                  <span class="hlc-keyword">be</span>
-                  <span class="hlc-string">"Alice"</span><br />
-                  <span class="hlc-keyword">let</span> age
-                  <span class="hlc-keyword">be</span> 25<br />
-                  <span class="hlc-keyword">let</span> is_active
-                  <span class="hlc-keyword">be</span>
-                  <span class="hlc-keyword">true</span><br /><br />
-                  <span class="hlc-comment">// Lists and objects</span><br />
-                  <span class="hlc-keyword">let</span> numbers
-                  <span class="hlc-keyword">be</span> [1, 2, 3, 4, 5]<br />
-                  <span class="hlc-keyword">let</span> person
-                  <span class="hlc-keyword">be</span> {<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;name:
-                  <span class="hlc-string">"Bob"</span>,<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;age: 30<br />
-                  }
-                </code>
-              </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-md p-6">
-              <h3 class="text-xl font-semibold mb-4">Control Flow</h3>
-              <div class="code-block rounded-lg p-4">
-                <code class="text-sm">
-                  <span class="hlc-comment">// Conditional statements</span
-                  ><br />
-                  <span class="hlc-keyword">if</span> age
-                  <span class="hlc-keyword">is greater than</span> 18:<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
-                    >display</span
-                  >
-                  <span class="hlc-string">"Adult"</span><br />
-                  <span class="hlc-keyword">otherwise if</span> age
-                  <span class="hlc-keyword">is</span> 18:<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
-                    >display</span
-                  >
-                  <span class="hlc-string">"Just turned adult"</span><br />
-                  <span class="hlc-keyword">otherwise</span>:<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
-                    >display</span
-                  >
-                  <span class="hlc-string">"Minor"</span><br /><br />
-                  <span class="hlc-comment">// Loops</span><br />
-                  <span class="hlc-keyword">for each</span> number
-                  <span class="hlc-keyword">in</span> numbers:<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
-                    >display</span
-                  >
-                  number
-                </code>
-              </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-md p-6">
-              <h3 class="text-xl font-semibold mb-4">Functions</h3>
-              <div class="code-block rounded-lg p-4">
-                <code class="text-sm">
-                  <span class="hlc-comment">// Function definition</span><br />
-                  <span class="hlc-keyword">define function</span>
-                  <span class="hlc-function">calculate_area</span><br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword"
-                    >that takes</span
-                  >
-                  width <span class="hlc-keyword">and</span> height:<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword"
-                    >return</span
-                  >
-                  width
-                  <span class="hlc-keyword">multiplied by</span>
-                  height<br /><br />
-                  <span class="hlc-comment">// Function call</span><br />
-                  <span class="hlc-keyword">let</span> area
-                  <span class="hlc-keyword">be</span>
-                  <span class="hlc-function">calculate_area</span>(10, 5)<br />
-                  <span class="hlc-function">display</span>
-                  <span class="hlc-string">"Area is"</span> area
-                </code>
-              </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-md p-6">
-              <h3 class="text-xl font-semibold mb-4">Error Handling</h3>
-              <div class="code-block rounded-lg p-4">
-                <code class="text-sm">
-                  <span class="hlc-keyword">try to</span>:<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword">let</span>
-                  result <span class="hlc-keyword">be</span> 10
-                  <span class="hlc-keyword">divided by</span> 0<br />
-                  <span class="hlc-keyword">if something goes wrong</span
-                  >:<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
-                    >display</span
-                  >
-                  <span class="hlc-string">"Cannot divide by zero"</span><br />
-                  <span class="hlc-keyword">always do</span>:<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
-                    >display</span
-                  >
-                  <span class="hlc-string">"Operation completed"</span>
-                </code>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Code Examples Section -->
-        <section id="examples" class="mb-16">
-          <h2 class="text-3xl font-bold mb-6 text-gray-800">Code Examples</h2>
-
-          <div class="space-y-6">
-            <div class="bg-white rounded-lg shadow-md p-6">
-              <h3 class="text-xl font-semibold mb-4">
-                Example 1: Todo List Manager
+              <h3
+                class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100"
+              >
+                Structured Specifications
               </h3>
-              <div class="code-block rounded-lg p-4">
-                <code class="text-sm">
-                  <span class="hlc-comment">// Todo list management system</span
-                  ><br />
-                  <span class="hlc-keyword">let</span> todo_list
-                  <span class="hlc-keyword">be</span> []<br /><br />
-                  <span class="hlc-keyword">define function</span>
-                  <span class="hlc-function">add_task</span>
-                  <span class="hlc-keyword">that takes</span> task:<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword">add</span>
-                  task <span class="hlc-keyword">to</span> todo_list<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
-                    >display</span
-                  >
-                  <span class="hlc-string">"Task added:"</span> task<br /><br />
-                  <span class="hlc-keyword">define function</span>
-                  <span class="hlc-function">show_tasks</span>:<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword">if</span>
-                  todo_list <span class="hlc-keyword">is empty</span>:<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                    class="hlc-function"
-                    >display</span
-                  >
-                  <span class="hlc-string">"No tasks yet!"</span><br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword"
-                    >otherwise</span
-                  >:<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                    class="hlc-function"
-                    >display</span
-                  >
-                  <span class="hlc-string">"Your tasks:"</span><br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                    class="hlc-keyword"
-                    >for each</span
-                  >
-                  task <span class="hlc-keyword">in</span> todo_list:<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                    class="hlc-function"
-                    >display</span
-                  >
-                  <span class="hlc-string">"- "</span> task<br /><br />
-                  <span class="hlc-comment">// Usage</span><br />
-                  <span class="hlc-function">add_task</span>(<span
-                    class="hlc-string"
-                    >"Buy groceries"</span
-                  >)<br />
-                  <span class="hlc-function">add_task</span>(<span
-                    class="hlc-string"
-                    >"Walk the dog"</span
-                  >)<br />
-                  <span class="hlc-function">show_tasks</span>()
-                </code>
-              </div>
+              <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                Convert natural language requirements into organized JSON
+                hierarchies that machines can understand and process with
+                perfect clarity.
+              </p>
             </div>
-
-            <div class="bg-white rounded-lg shadow-md p-6">
-              <h3 class="text-xl font-semibold mb-4">
-                Example 2: Data Processing
+            <div
+              class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover-lift theme-transition"
+            >
+              <div
+                class="w-16 h-16 bg-gradient-to-br from-forest-600 to-forest-700 rounded-2xl flex items-center justify-center mb-6 shadow-lg"
+              >
+                <svg
+                  class="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  ></path>
+                </svg>
+              </div>
+              <h3
+                class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100"
+              >
+                Intermediate Layer
               </h3>
-              <div class="code-block rounded-lg p-4">
-                <code class="text-sm">
-                  <span class="hlc-comment">// Process sales data</span><br />
-                  <span class="hlc-keyword">let</span> sales_data
-                  <span class="hlc-keyword">be</span> [<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;{product:
-                  <span class="hlc-string">"Laptop"</span>, price: 999,
-                  quantity: 5},<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;{product:
-                  <span class="hlc-string">"Mouse"</span>, price: 25, quantity:
-                  20},<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;{product:
-                  <span class="hlc-string">"Keyboard"</span>, price: 75,
-                  quantity: 15}<br />
-                  ]<br /><br />
-                  <span class="hlc-keyword">let</span> total_revenue
-                  <span class="hlc-keyword">be</span> 0<br /><br />
-                  <span class="hlc-keyword">for each</span> sale
-                  <span class="hlc-keyword">in</span> sales_data:<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword">let</span>
-                  item_revenue <span class="hlc-keyword">be</span> sale.price
-                  <span class="hlc-keyword">multiplied by</span>
-                  sale.quantity<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-keyword">add</span>
-                  item_revenue
-                  <span class="hlc-keyword">to</span> total_revenue<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="hlc-function"
-                    >display</span
+              <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                Acts as a sophisticated bridge between human ideas and technical
+                implementation, making complex projects manageable and scalable.
+              </p>
+            </div>
+            <div
+              class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover-lift theme-transition"
+            >
+              <div
+                class="w-16 h-16 bg-gradient-to-br from-forest-700 to-forest-800 rounded-2xl flex items-center justify-center mb-6 shadow-lg"
+              >
+                <svg
+                  class="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+                  ></path>
+                </svg>
+              </div>
+              <h3
+                class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100"
+              >
+                Tool Integration
+              </h3>
+              <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                Enable automated code generation, documentation creation, and
+                workflow management from your specifications with seamless
+                integration.
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 theme-transition"
+          >
+            <h3
+              class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100"
+            >
+              Why Choose HLC?
+            </h3>
+            <div class="grid md:grid-cols-2 gap-8">
+              <div class="space-y-6">
+                <div class="flex items-start space-x-4">
+                  <div
+                    class="w-10 h-10 bg-forest-500 rounded-xl flex items-center justify-center flex-shrink-0"
                   >
-                  sale.product
-                  <span class="hlc-string">": $"</span> item_revenue<br /><br />
-                  <span class="hlc-function">display</span>
-                  <span class="hlc-string">"Total Revenue: $"</span>
-                  total_revenue
-                </code>
+                    <span class="text-white font-bold">🎯</span>
+                  </div>
+                  <div>
+                    <h4
+                      class="font-bold text-forest-600 dark:text-forest-400 mb-2"
+                    >
+                      Crystal Clear Clarity
+                    </h4>
+                    <p class="text-gray-600 dark:text-gray-300">
+                      Translates vague requirements into structured, unambiguous
+                      JSON specifications that eliminate confusion and
+                      miscommunication.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex items-start space-x-4">
+                  <div
+                    class="w-10 h-10 bg-forest-600 rounded-xl flex items-center justify-center flex-shrink-0"
+                  >
+                    <span class="text-white font-bold">📈</span>
+                  </div>
+                  <div>
+                    <h4
+                      class="font-bold text-forest-600 dark:text-forest-400 mb-2"
+                    >
+                      Infinite Scalability
+                    </h4>
+                    <p class="text-gray-600 dark:text-gray-300">
+                      Breaks down the most complex projects into nested,
+                      manageable components that grow with your needs.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-6">
+                <div class="flex items-start space-x-4">
+                  <div
+                    class="w-10 h-10 bg-forest-700 rounded-xl flex items-center justify-center flex-shrink-0"
+                  >
+                    <span class="text-white font-bold">🤖</span>
+                  </div>
+                  <div>
+                    <h4
+                      class="font-bold text-forest-600 dark:text-forest-400 mb-2"
+                    >
+                      Machine Intelligence
+                    </h4>
+                    <p class="text-gray-600 dark:text-gray-300">
+                      Tools can parse HLC to auto-generate code, documentation,
+                      or workflows with unprecedented accuracy and efficiency.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex items-start space-x-4">
+                  <div
+                    class="w-10 h-10 bg-forest-800 rounded-xl flex items-center justify-center flex-shrink-0"
+                  >
+                    <span class="text-white font-bold">🔄</span>
+                  </div>
+                  <div>
+                    <h4
+                      class="font-bold text-forest-600 dark:text-forest-400 mb-2"
+                    >
+                      Universal Standard
+                    </h4>
+                    <p class="text-gray-600 dark:text-gray-300">
+                      Provides a consistent, industry-standard format for
+                      software specification across teams, projects, and
+                      organizations.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- API Reference Section -->
-        <section id="api-reference" class="mb-16">
-          <h2 class="text-3xl font-bold mb-6 text-gray-800">API Reference</h2>
+        <!-- Core Concepts Section -->
+        <section id="core-concepts" class="mb-20 animate-fade-in">
+          <h2
+            class="text-4xl font-bold mb-12 text-gray-800 dark:text-gray-100 text-center"
+          >
+            🏗️ Core Concepts
+          </h2>
 
-          <div class="grid md:grid-cols-2 gap-6">
-            <div class="bg-white rounded-lg shadow-md p-6">
-              <h3 class="text-xl font-semibold mb-4">Built-in Functions</h3>
-              <div class="space-y-4">
-                <div class="border-l-4 border-primary pl-4">
-                  <h4 class="font-semibold text-primary">display(value)</h4>
-                  <p class="text-gray-600 text-sm">
-                    Outputs a value to the console or screen
-                  </p>
-                </div>
-                <div class="border-l-4 border-primary pl-4">
-                  <h4 class="font-semibold text-primary">ask(question)</h4>
-                  <p class="text-gray-600 text-sm">
-                    Prompts user for input with a question
-                  </p>
-                </div>
-                <div class="border-l-4 border-primary pl-4">
-                  <h4 class="font-semibold text-primary">
-                    length_of(collection)
+          <div class="space-y-10">
+            <!-- Mandatory Structure -->
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover-lift theme-transition"
+            >
+              <h3
+                class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 flex items-center"
+              >
+                <span
+                  class="w-10 h-10 bg-gradient-to-br from-forest-500 to-forest-600 rounded-xl flex items-center justify-center text-white text-lg font-bold mr-4 shadow-lg"
+                  >1</span
+                >
+                Mandatory Two-Object Structure
+              </h3>
+              <p
+                class="text-gray-600 dark:text-gray-300 mb-6 text-lg leading-relaxed"
+              >
+                Every HLC specification must start with exactly two top-level
+                objects in an array:
+              </p>
+
+              <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <div
+                  class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-6 rounded-xl border border-forest-200 dark:border-forest-700"
+                >
+                  <h4
+                    class="font-bold text-forest-700 dark:text-forest-300 mb-3 text-lg"
+                  >
+                    Entry-Level Object
                   </h4>
-                  <p class="text-gray-600 text-sm">
-                    Returns the number of items in a list or string
+                  <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                    Defines the project's structure, framework, and global
+                    rules. Sets up the foundation for how the entire project
+                    should be organized and implemented.
                   </p>
                 </div>
-                <div class="border-l-4 border-primary pl-4">
-                  <h4 class="font-semibold text-primary">
-                    random_number(min, max)
+                <div
+                  class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-6 rounded-xl border border-forest-200 dark:border-forest-700"
+                >
+                  <h4
+                    class="font-bold text-forest-700 dark:text-forest-300 mb-3 text-lg"
+                  >
+                    Top-Level Object
                   </h4>
-                  <p class="text-gray-600 text-sm">
-                    Generates a random number between min and max
+                  <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                    Specifies the type of software being built (e.g., mobile
+                    app, web service, calculator). Defines the main
+                    functionality and purpose.
+                  </p>
+                </div>
+              </div>
+
+              <div class="code-block rounded-xl p-6 overflow-x-auto">
+                <code class="text-sm">
+                  <span class="json-bracket">[</span><br />
+                  &nbsp;&nbsp;<span class="json-bracket">{</span><br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-comment"
+                    >/* Entry-Level Object - Project Structure */</span
+                  ><br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key">"name"</span>:
+                  <span class="json-string">"DJANGO-STYLE"</span>,<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key">"type"</span>:
+                  <span class="json-string">"entry_level"</span><br />
+                  &nbsp;&nbsp;<span class="json-bracket">}</span>,<br />
+                  &nbsp;&nbsp;<span class="json-bracket">{</span><br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-comment"
+                    >/* Top-Level Object - Software Type */</span
+                  ><br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key">"name"</span>:
+                  <span class="json-string">"CALCULATOR-APP"</span>,<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key">"type"</span>:
+                  <span class="json-string">"top_level"</span><br />
+                  &nbsp;&nbsp;<span class="json-bracket">}</span><br />
+                  <span class="json-bracket">]</span>
+                </code>
+              </div>
+            </div>
+
+            <!-- Required Fields -->
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover-lift theme-transition"
+            >
+              <h3
+                class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 flex items-center"
+              >
+                <span
+                  class="w-10 h-10 bg-gradient-to-br from-forest-600 to-forest-700 rounded-xl flex items-center justify-center text-white text-lg font-bold mr-4 shadow-lg"
+                  >2</span
+                >
+                Required Object Fields
+              </h3>
+              <p
+                class="text-gray-600 dark:text-gray-300 mb-8 text-lg leading-relaxed"
+              >
+                Every HLC object must contain these three essential fields:
+              </p>
+
+              <div class="space-y-6">
+                <div
+                  class="flex items-start space-x-6 p-6 bg-gradient-to-r from-forest-50 to-transparent dark:from-forest-900 dark:to-transparent rounded-xl border border-forest-200 dark:border-forest-700"
+                >
+                  <div
+                    class="w-16 h-16 bg-gradient-to-br from-forest-500 to-forest-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg flex-shrink-0"
+                  >
+                    N
+                  </div>
+                  <div>
+                    <h4
+                      class="font-bold text-gray-800 dark:text-gray-100 text-lg mb-2"
+                    >
+                      name
+                    </h4>
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                      A unique identifier for the object (e.g., "DJANGO-STYLE",
+                      "USER_AUTH", "PAYMENT_GATEWAY")
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="flex items-start space-x-6 p-6 bg-gradient-to-r from-forest-50 to-transparent dark:from-forest-900 dark:to-transparent rounded-xl border border-forest-200 dark:border-forest-700"
+                >
+                  <div
+                    class="w-16 h-16 bg-gradient-to-br from-forest-600 to-forest-700 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg flex-shrink-0"
+                  >
+                    T
+                  </div>
+                  <div>
+                    <h4
+                      class="font-bold text-gray-800 dark:text-gray-100 text-lg mb-2"
+                    >
+                      type
+                    </h4>
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                      The role of the object (entry_level, top_level, feature,
+                      control, directive, literal)
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="flex items-start space-x-6 p-6 bg-gradient-to-r from-forest-50 to-transparent dark:from-forest-900 dark:to-transparent rounded-xl border border-forest-200 dark:border-forest-700"
+                >
+                  <div
+                    class="w-16 h-16 bg-gradient-to-br from-forest-700 to-forest-800 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg flex-shrink-0"
+                  >
+                    P
+                  </div>
+                  <div>
+                    <h4
+                      class="font-bold text-gray-800 dark:text-gray-100 text-lg mb-2"
+                    >
+                      prompt
+                    </h4>
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                      A natural-language explanation of what the object does or
+                      represents
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="mt-8 bg-gray-50 dark:bg-gray-700 p-6 rounded-xl border border-gray-200 dark:border-gray-600"
+              >
+                <h4
+                  class="font-bold text-gray-800 dark:text-gray-100 mb-4 text-lg"
+                >
+                  Optional Field:
+                </h4>
+                <div class="flex items-start space-x-6">
+                  <div
+                    class="w-16 h-16 bg-gradient-to-br from-gray-500 to-gray-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg flex-shrink-0"
+                  >
+                    L
+                  </div>
+                  <div>
+                    <h4
+                      class="font-bold text-gray-800 dark:text-gray-100 text-lg mb-2"
+                    >
+                      linkers
+                    </h4>
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                      An array of child objects that provide additional detail
+                      or refinement to the parent object
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Object Types Section -->
+        <section id="object-types" class="mb-20 animate-fade-in">
+          <h2
+            class="text-4xl font-bold mb-12 text-gray-800 dark:text-gray-100 text-center"
+          >
+            🧩 Object Types
+          </h2>
+
+          <div class="grid md:grid-cols-2 gap-8">
+            <!-- Entry Level -->
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover-lift theme-transition"
+            >
+              <div class="flex items-center mb-6">
+                <div
+                  class="w-16 h-16 bg-gradient-to-br from-forest-500 to-forest-600 rounded-2xl flex items-center justify-center text-white font-bold text-lg mr-6 shadow-lg"
+                >
+                  EL
+                </div>
+                <div>
+                  <h3
+                    class="text-xl font-bold text-gray-800 dark:text-gray-100"
+                  >
+                    Entry-Level
+                  </h3>
+                  <p
+                    class="text-sm text-forest-600 dark:text-forest-400 font-mono"
+                  >
+                    type: "entry_level"
+                  </p>
+                </div>
+              </div>
+              <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                Sets up project-wide structure, framework choices, and global
+                rules. Always appears first in the array.
+              </p>
+              <div
+                class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-4 rounded-xl border border-forest-200 dark:border-forest-700"
+              >
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  <strong class="text-forest-700 dark:text-forest-300"
+                    >Example:</strong
+                  >
+                  Django project structure, React app setup, microservices
+                  architecture
+                </p>
+              </div>
+            </div>
+
+            <!-- Top Level -->
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover-lift theme-transition"
+            >
+              <div class="flex items-center mb-6">
+                <div
+                  class="w-16 h-16 bg-gradient-to-br from-forest-600 to-forest-700 rounded-2xl flex items-center justify-center text-white font-bold text-lg mr-6 shadow-lg"
+                >
+                  TL
+                </div>
+                <div>
+                  <h3
+                    class="text-xl font-bold text-gray-800 dark:text-gray-100"
+                  >
+                    Top-Level
+                  </h3>
+                  <p
+                    class="text-sm text-forest-600 dark:text-forest-400 font-mono"
+                  >
+                    type: "top_level"
+                  </p>
+                </div>
+              </div>
+              <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                Defines the main software type and primary functionality. Always
+                appears second in the array.
+              </p>
+              <div
+                class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-4 rounded-xl border border-forest-200 dark:border-forest-700"
+              >
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  <strong class="text-forest-700 dark:text-forest-300"
+                    >Example:</strong
+                  >
+                  Calculator app, blog platform, e-commerce site, game engine
+                </p>
+              </div>
+            </div>
+
+            <!-- Feature -->
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover-lift theme-transition"
+            >
+              <div class="flex items-center mb-6">
+                <div
+                  class="w-16 h-16 bg-gradient-to-br from-forest-700 to-forest-800 rounded-2xl flex items-center justify-center text-white font-bold text-lg mr-6 shadow-lg"
+                >
+                  F
+                </div>
+                <div>
+                  <h3
+                    class="text-xl font-bold text-gray-800 dark:text-gray-100"
+                  >
+                    Feature
+                  </h3>
+                  <p
+                    class="text-sm text-forest-600 dark:text-forest-400 font-mono"
+                  >
+                    type: "feature"
+                  </p>
+                </div>
+              </div>
+              <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                Describes specific functionality or capabilities. Linked to
+                parent objects through linkers.
+              </p>
+              <div
+                class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-4 rounded-xl border border-forest-200 dark:border-forest-700"
+              >
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  <strong class="text-forest-700 dark:text-forest-300"
+                    >Example:</strong
+                  >
+                  User authentication, file upload, search functionality,
+                  payment processing
+                </p>
+              </div>
+            </div>
+
+            <!-- Control -->
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover-lift theme-transition"
+            >
+              <div class="flex items-center mb-6">
+                <div
+                  class="w-16 h-16 bg-gradient-to-br from-forest-800 to-forest-900 rounded-2xl flex items-center justify-center text-white font-bold text-lg mr-6 shadow-lg"
+                >
+                  C
+                </div>
+                <div>
+                  <h3
+                    class="text-xl font-bold text-gray-800 dark:text-gray-100"
+                  >
+                    Control
+                  </h3>
+                  <p
+                    class="text-sm text-forest-600 dark:text-forest-400 font-mono"
+                  >
+                    type: "control"
+                  </p>
+                </div>
+              </div>
+              <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                Dictates behavior, timing, or operational parameters. Controls
+                how features work.
+              </p>
+              <div
+                class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-4 rounded-xl border border-forest-200 dark:border-forest-700"
+              >
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  <strong class="text-forest-700 dark:text-forest-300"
+                    >Example:</strong
+                  >
+                  Auto-save every 5 seconds, rate limiting, cache expiration,
+                  retry logic
+                </p>
+              </div>
+            </div>
+
+            <!-- Directive -->
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover-lift theme-transition"
+            >
+              <div class="flex items-center mb-6">
+                <div
+                  class="w-16 h-16 bg-gradient-to-br from-gray-600 to-gray-700 rounded-2xl flex items-center justify-center text-white font-bold text-lg mr-6 shadow-lg"
+                >
+                  D
+                </div>
+                <div>
+                  <h3
+                    class="text-xl font-bold text-gray-800 dark:text-gray-100"
+                  >
+                    Directive
+                  </h3>
+                  <p
+                    class="text-sm text-forest-600 dark:text-forest-400 font-mono"
+                  >
+                    type: "directive"
+                  </p>
+                </div>
+              </div>
+              <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                Enforces rules, standards, or requirements. Often nested under
+                other objects via linkers.
+              </p>
+              <div
+                class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-4 rounded-xl border border-forest-200 dark:border-forest-700"
+              >
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  <strong class="text-forest-700 dark:text-forest-300"
+                    >Example:</strong
+                  >
+                  Use HTTPS only, follow REST API standards, implement GDPR
+                  compliance
+                </p>
+              </div>
+            </div>
+
+            <!-- Literal -->
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover-lift theme-transition"
+            >
+              <div class="flex items-center mb-6">
+                <div
+                  class="w-16 h-16 bg-gradient-to-br from-gray-700 to-gray-800 rounded-2xl flex items-center justify-center text-white font-bold text-lg mr-6 shadow-lg"
+                >
+                  L
+                </div>
+                <div>
+                  <h3
+                    class="text-xl font-bold text-gray-800 dark:text-gray-100"
+                  >
+                    Literal
+                  </h3>
+                  <p
+                    class="text-sm text-forest-600 dark:text-forest-400 font-mono"
+                  >
+                    type: "literal"
+                  </p>
+                </div>
+              </div>
+              <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                Provides fixed values or concrete specifications. Cannot have
+                linkers (terminal nodes).
+              </p>
+              <div
+                class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-4 rounded-xl border border-forest-200 dark:border-forest-700"
+              >
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  <strong class="text-forest-700 dark:text-forest-300"
+                    >Example:</strong
+                  >
+                  Version 4.2, port 8080, database name "users_db", API key
+                  format
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Structure & Linking Section -->
+        <section id="structure" class="mb-20 animate-fade-in">
+          <h2
+            class="text-4xl font-bold mb-12 text-gray-800 dark:text-gray-100 text-center"
+          >
+            🌳 Structure & Linking
+          </h2>
+
+          <div
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover-lift theme-transition"
+          >
+            <h3
+              class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100"
+            >
+              Understanding Linkers
+            </h3>
+            <p
+              class="text-gray-600 dark:text-gray-300 mb-8 text-lg leading-relaxed"
+            >
+              Linkers are the powerful mechanism that connects parent objects to
+              their children, creating the hierarchical structure that makes HLC
+              incredibly expressive and organized.
+            </p>
+
+            <div
+              class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-6 rounded-xl border border-forest-200 dark:border-forest-700 mb-8"
+            >
+              <h4
+                class="font-bold text-forest-700 dark:text-forest-300 mb-4 text-lg"
+              >
+                Linker Structure Components
+              </h4>
+              <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center">
+                  <div
+                    class="w-12 h-12 bg-forest-600 rounded-xl flex items-center justify-center text-white font-bold mx-auto mb-3"
+                  >
+                    N
+                  </div>
+                  <h5
+                    class="font-semibold text-gray-800 dark:text-gray-100 mb-2"
+                  >
+                    name
+                  </h5>
+                  <p class="text-sm text-gray-600 dark:text-gray-300">
+                    The role or relationship type
+                  </p>
+                </div>
+                <div class="text-center">
+                  <div
+                    class="w-12 h-12 bg-forest-700 rounded-xl flex items-center justify-center text-white font-bold mx-auto mb-3"
+                  >
+                    D
+                  </div>
+                  <h5
+                    class="font-semibold text-gray-800 dark:text-gray-100 mb-2"
+                  >
+                    description
+                  </h5>
+                  <p class="text-sm text-gray-600 dark:text-gray-300">
+                    How the child relates to parent
+                  </p>
+                </div>
+                <div class="text-center">
+                  <div
+                    class="w-12 h-12 bg-forest-800 rounded-xl flex items-center justify-center text-white font-bold mx-auto mb-3"
+                  >
+                    V
+                  </div>
+                  <h5
+                    class="font-semibold text-gray-800 dark:text-gray-100 mb-2"
+                  >
+                    value
+                  </h5>
+                  <p class="text-sm text-gray-600 dark:text-gray-300">
+                    The actual child object
                   </p>
                 </div>
               </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md p-6">
-              <h3 class="text-xl font-semibold mb-4">String Operations</h3>
-              <div class="space-y-4">
-                <div class="border-l-4 border-accent pl-4">
-                  <h4 class="font-semibold text-accent">text.uppercase</h4>
-                  <p class="text-gray-600 text-sm">
-                    Converts text to uppercase
-                  </p>
+            <div class="code-block rounded-xl p-6 overflow-x-auto">
+              <code class="text-sm">
+                <span class="json-string">"linkers"</span>:
+                <span class="json-bracket">[</span><br />
+                &nbsp;&nbsp;<span class="json-bracket">{</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key">"name"</span>:
+                <span class="json-string">"framework"</span>,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key"
+                  >"description"</span
+                >:
+                <span class="json-string"
+                  >"Project framework specification"</span
+                >,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key">"value"</span>:
+                <span class="json-bracket">{</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key"
+                  >"name"</span
+                >: <span class="json-string">"DJANGO"</span>,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key"
+                  >"type"</span
+                >: <span class="json-string">"directive"</span>,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key"
+                  >"prompt"</span
+                >:
+                <span class="json-string"
+                  >"Use Django framework with latest version"</span
+                ><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-bracket">}</span
+                ><br />
+                &nbsp;&nbsp;<span class="json-bracket">}</span><br />
+                <span class="json-bracket">]</span>
+              </code>
+            </div>
+          </div>
+        </section>
+
+        <!-- Examples Section -->
+        <section id="examples" class="mb-20 animate-fade-in">
+          <h2
+            class="text-4xl font-bold mb-12 text-gray-800 dark:text-gray-100 text-center"
+          >
+            💡 Examples
+          </h2>
+
+          <div
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover-lift theme-transition"
+          >
+            <h3
+              class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100"
+            >
+              Complete HLC Specification: Django Calculator App
+            </h3>
+            <p
+              class="text-gray-600 dark:text-gray-300 mb-8 text-lg leading-relaxed"
+            >
+              This example demonstrates a complete HLC specification for
+              building a sophisticated calculator web application using Django
+              framework:
+            </p>
+
+            <div class="code-block rounded-xl p-6 text-xs overflow-x-auto mb-8">
+              <code>
+                <span class="json-bracket">[</span><br />
+                &nbsp;&nbsp;<span class="json-bracket">{</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key">"name"</span>:
+                <span class="json-string">"DJANGO-STYLE"</span>,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key">"type"</span>:
+                <span class="json-string">"entry_level"</span>,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key">"prompt"</span>:
+                <span class="json-string"
+                  >"Create this project using Django style project structure
+                  with best practices."</span
+                >,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key">"linkers"</span>:
+                <span class="json-bracket">[</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="json-bracket"
+                  >{</span
+                ><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="json-key"
+                  >"name"</span
+                >: <span class="json-string">"framework"</span>,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="json-key"
+                  >"description"</span
+                >:
+                <span class="json-string">"Web framework specification"</span
+                >,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="json-key"
+                  >"value"</span
+                >: <span class="json-bracket">{</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="json-key"
+                  >"name"</span
+                >: <span class="json-string">"DJANGO"</span>,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="json-key"
+                  >"type"</span
+                >: <span class="json-string">"directive"</span>,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="json-key"
+                  >"prompt"</span
+                >:
+                <span class="json-string"
+                  >"Use Python Django as the web framework."</span
+                ><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="json-bracket"
+                  >}</span
+                ><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="json-bracket"
+                  >}</span
+                ><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-bracket">]</span
+                ><br />
+                &nbsp;&nbsp;<span class="json-bracket">}</span>,<br />
+                &nbsp;&nbsp;<span class="json-bracket">{</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key">"name"</span>:
+                <span class="json-string">"CALCULATOR-APP"</span>,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key">"type"</span>:
+                <span class="json-string">"top_level"</span>,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key">"prompt"</span>:
+                <span class="json-string"
+                  >"Create a sophisticated calculator web application with
+                  advanced features."</span
+                >,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-key">"linkers"</span>:
+                <span class="json-bracket">[</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="json-bracket"
+                  >{</span
+                ><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="json-key"
+                  >"name"</span
+                >: <span class="json-string">"interface"</span>,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="json-key"
+                  >"description"</span
+                >:
+                <span class="json-string">"User interface specification"</span
+                >,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="json-key"
+                  >"value"</span
+                >: <span class="json-bracket">{</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="json-key"
+                  >"name"</span
+                >: <span class="json-string">"RESPONSIVE-UI"</span>,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="json-key"
+                  >"type"</span
+                >: <span class="json-string">"feature"</span>,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="json-key"
+                  >"prompt"</span
+                >:
+                <span class="json-string"
+                  >"Create a responsive calculator interface that works on all
+                  devices."</span
+                ><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="json-bracket"
+                  >}</span
+                ><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="json-bracket"
+                  >}</span
+                ><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="json-bracket">]</span
+                ><br />
+                &nbsp;&nbsp;<span class="json-bracket">}</span><br />
+                <span class="json-bracket">]</span>
+              </code>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-6 rounded-xl border border-forest-200 dark:border-forest-700"
+            >
+              <h4
+                class="font-bold text-forest-700 dark:text-forest-300 mb-4 text-lg"
+              >
+                What This Specification Achieves
+              </h4>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h5
+                    class="font-semibold text-forest-600 dark:text-forest-400 mb-3"
+                  >
+                    📋 Project Foundation
+                  </h5>
+                  <ul
+                    class="space-y-2 text-sm text-gray-700 dark:text-gray-300"
+                  >
+                    <li class="flex items-start">
+                      <span
+                        class="w-2 h-2 bg-forest-500 rounded-full mr-2 mt-2 flex-shrink-0"
+                      ></span
+                      >Django framework implementation
+                    </li>
+                    <li class="flex items-start">
+                      <span
+                        class="w-2 h-2 bg-forest-500 rounded-full mr-2 mt-2 flex-shrink-0"
+                      ></span
+                      >Best practices project structure
+                    </li>
+                    <li class="flex items-start">
+                      <span
+                        class="w-2 h-2 bg-forest-500 rounded-full mr-2 mt-2 flex-shrink-0"
+                      ></span
+                      >Scalable architecture foundation
+                    </li>
+                  </ul>
                 </div>
-                <div class="border-l-4 border-accent pl-4">
-                  <h4 class="font-semibold text-accent">text.lowercase</h4>
-                  <p class="text-gray-600 text-sm">
-                    Converts text to lowercase
-                  </p>
+                <div>
+                  <h5
+                    class="font-semibold text-forest-600 dark:text-forest-400 mb-3"
+                  >
+                    🎯 Application Features
+                  </h5>
+                  <ul
+                    class="space-y-2 text-sm text-gray-700 dark:text-gray-300"
+                  >
+                    <li class="flex items-start">
+                      <span
+                        class="w-2 h-2 bg-forest-600 rounded-full mr-2 mt-2 flex-shrink-0"
+                      ></span
+                      >Advanced calculator functionality
+                    </li>
+                    <li class="flex items-start">
+                      <span
+                        class="w-2 h-2 bg-forest-600 rounded-full mr-2 mt-2 flex-shrink-0"
+                      ></span
+                      >Responsive web interface
+                    </li>
+                    <li class="flex items-start">
+                      <span
+                        class="w-2 h-2 bg-forest-600 rounded-full mr-2 mt-2 flex-shrink-0"
+                      ></span
+                      >Cross-device compatibility
+                    </li>
+                  </ul>
                 </div>
-                <div class="border-l-4 border-accent pl-4">
-                  <h4 class="font-semibold text-accent">
-                    text contains "substring"
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Use Cases Section -->
+        <section id="use-cases" class="mb-20 animate-fade-in">
+          <h2
+            class="text-4xl font-bold mb-12 text-gray-800 dark:text-gray-100 text-center"
+          >
+            🎯 Use Cases
+          </h2>
+
+          <div class="grid md:grid-cols-2 gap-8">
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover-lift theme-transition"
+            >
+              <div
+                class="w-16 h-16 bg-gradient-to-br from-forest-500 to-forest-600 rounded-2xl flex items-center justify-center text-white font-bold text-2xl mb-6 shadow-lg"
+              >
+                🏢
+              </div>
+              <h3
+                class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100"
+              >
+                Enterprise Software Planning
+              </h3>
+              <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                Define complex enterprise applications with multiple
+                microservices, databases, and integrations using structured
+                hierarchical specifications.
+              </p>
+              <div
+                class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-4 rounded-xl border border-forest-200 dark:border-forest-700"
+              >
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  <strong class="text-forest-700 dark:text-forest-300"
+                    >Example:</strong
+                  >
+                  E-commerce platform with user management, payment processing,
+                  inventory tracking, and analytics dashboard
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover-lift theme-transition"
+            >
+              <div
+                class="w-16 h-16 bg-gradient-to-br from-forest-600 to-forest-700 rounded-2xl flex items-center justify-center text-white font-bold text-2xl mb-6 shadow-lg"
+              >
+                🤖
+              </div>
+              <h3
+                class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100"
+              >
+                AI Code Generation
+              </h3>
+              <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                Provide structured input for AI systems to generate accurate,
+                production-ready code based on detailed specifications.
+              </p>
+              <div
+                class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-4 rounded-xl border border-forest-200 dark:border-forest-700"
+              >
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  <strong class="text-forest-700 dark:text-forest-300"
+                    >Example:</strong
+                  >
+                  Feed HLC specs to GPT models for generating Django, React, or
+                  mobile app code with high accuracy
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover-lift theme-transition"
+            >
+              <div
+                class="w-16 h-16 bg-gradient-to-br from-forest-700 to-forest-800 rounded-2xl flex items-center justify-center text-white font-bold text-2xl mb-6 shadow-lg"
+              >
+                📋
+              </div>
+              <h3
+                class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100"
+              >
+                Living Documentation
+              </h3>
+              <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                Create dynamic documentation that evolves with your project and
+                can be automatically processed by tools.
+              </p>
+              <div
+                class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-4 rounded-xl border border-forest-200 dark:border-forest-700"
+              >
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  <strong class="text-forest-700 dark:text-forest-300"
+                    >Example:</strong
+                  >
+                  Generate API documentation, architecture diagrams, and
+                  deployment guides from HLC specifications
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover-lift theme-transition"
+            >
+              <div
+                class="w-16 h-16 bg-gradient-to-br from-forest-800 to-forest-900 rounded-2xl flex items-center justify-center text-white font-bold text-2xl mb-6 shadow-lg"
+              >
+                👥
+              </div>
+              <h3
+                class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100"
+              >
+                Team Communication
+              </h3>
+              <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                Bridge the gap between business stakeholders and technical teams
+                with clear, structured requirements that everyone can
+                understand.
+              </p>
+              <div
+                class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-4 rounded-xl border border-forest-200 dark:border-forest-700"
+              >
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  <strong class="text-forest-700 dark:text-forest-300"
+                    >Example:</strong
+                  >
+                  Product managers define features in HLC, developers implement
+                  based on structured specifications
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Best Practices Section -->
+        <section id="best-practices" class="mb-20 animate-fade-in">
+          <h2
+            class="text-4xl font-bold mb-12 text-gray-800 dark:text-gray-100 text-center"
+          >
+            ⭐ Best Practices
+          </h2>
+
+          <div class="space-y-8">
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover-lift theme-transition"
+            >
+              <h3
+                class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 flex items-center"
+              >
+                <span
+                  class="w-10 h-10 bg-gradient-to-br from-forest-500 to-forest-600 rounded-xl flex items-center justify-center text-white text-lg font-bold mr-4 shadow-lg"
+                  >1</span
+                >
+                Start Simple, Build Complexity Gradually
+              </h3>
+              <div class="grid md:grid-cols-2 gap-8">
+                <div
+                  class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 p-6 rounded-xl border border-green-200 dark:border-green-700"
+                >
+                  <h4
+                    class="font-bold text-green-700 dark:text-green-300 mb-4 text-lg"
+                  >
+                    ✅ Recommended Approach
                   </h4>
-                  <p class="text-gray-600 text-sm">
-                    Checks if text contains a substring
-                  </p>
+                  <ul
+                    class="space-y-3 text-sm text-gray-700 dark:text-gray-300"
+                  >
+                    <li class="flex items-start">
+                      <span
+                        class="w-2 h-2 bg-green-500 rounded-full mr-3 mt-2 flex-shrink-0"
+                      ></span
+                      >Begin with basic Entry-Level and Top-Level objects
+                    </li>
+                    <li class="flex items-start">
+                      <span
+                        class="w-2 h-2 bg-green-500 rounded-full mr-3 mt-2 flex-shrink-0"
+                      ></span
+                      >Add features incrementally through linkers
+                    </li>
+                    <li class="flex items-start">
+                      <span
+                        class="w-2 h-2 bg-green-500 rounded-full mr-3 mt-2 flex-shrink-0"
+                      ></span
+                      >Use descriptive, meaningful names and prompts
+                    </li>
+                    <li class="flex items-start">
+                      <span
+                        class="w-2 h-2 bg-green-500 rounded-full mr-3 mt-2 flex-shrink-0"
+                      ></span
+                      >Keep initial specifications focused and clear
+                    </li>
+                  </ul>
                 </div>
-                <div class="border-l-4 border-accent pl-4">
-                  <h4 class="font-semibold text-accent">
-                    split text by "delimiter"
+                <div
+                  class="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900 dark:to-red-800 p-6 rounded-xl border border-red-200 dark:border-red-700"
+                >
+                  <h4
+                    class="font-bold text-red-700 dark:text-red-300 mb-4 text-lg"
+                  >
+                    ❌ Common Pitfalls
                   </h4>
-                  <p class="text-gray-600 text-sm">
-                    Splits text into a list using delimiter
-                  </p>
+                  <ul
+                    class="space-y-3 text-sm text-gray-700 dark:text-gray-300"
+                  >
+                    <li class="flex items-start">
+                      <span
+                        class="w-2 h-2 bg-red-500 rounded-full mr-3 mt-2 flex-shrink-0"
+                      ></span
+                      >Creating deeply nested hierarchies from the start
+                    </li>
+                    <li class="flex items-start">
+                      <span
+                        class="w-2 h-2 bg-red-500 rounded-full mr-3 mt-2 flex-shrink-0"
+                      ></span
+                      >Using vague or generic object names
+                    </li>
+                    <li class="flex items-start">
+                      <span
+                        class="w-2 h-2 bg-red-500 rounded-full mr-3 mt-2 flex-shrink-0"
+                      ></span
+                      >Skipping the mandatory two-object structure
+                    </li>
+                    <li class="flex items-start">
+                      <span
+                        class="w-2 h-2 bg-red-500 rounded-full mr-3 mt-2 flex-shrink-0"
+                      ></span
+                      >Over-complicating initial specifications
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md p-6">
-              <h3 class="text-xl font-semibold mb-4">List Operations</h3>
-              <div class="space-y-4">
-                <div class="border-l-4 border-secondary pl-4">
-                  <h4 class="font-semibold text-secondary">add item to list</h4>
-                  <p class="text-gray-600 text-sm">
-                    Appends an item to the end of a list
-                  </p>
-                </div>
-                <div class="border-l-4 border-secondary pl-4">
-                  <h4 class="font-semibold text-secondary">
-                    remove item from list
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 hover-lift theme-transition"
+            >
+              <h3
+                class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 flex items-center"
+              >
+                <span
+                  class="w-10 h-10 bg-gradient-to-br from-forest-600 to-forest-700 rounded-xl flex items-center justify-center text-white text-lg font-bold mr-4 shadow-lg"
+                  >2</span
+                >
+                Naming Conventions & Standards
+              </h3>
+              <div class="grid md:grid-cols-3 gap-6">
+                <div
+                  class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-6 rounded-xl border border-forest-200 dark:border-forest-700 text-center"
+                >
+                  <h4
+                    class="font-bold text-forest-700 dark:text-forest-300 mb-4 text-lg"
+                  >
+                    Object Names
                   </h4>
-                  <p class="text-gray-600 text-sm">
-                    Removes the first occurrence of item
+                  <p class="text-sm text-gray-700 dark:text-gray-300 mb-4">
+                    Use UPPERCASE with hyphens for clarity
                   </p>
+                  <div class="space-y-2">
+                    <code
+                      class="text-xs bg-white dark:bg-gray-700 px-2 py-1 rounded block"
+                      >DJANGO-STYLE</code
+                    >
+                    <code
+                      class="text-xs bg-white dark:bg-gray-700 px-2 py-1 rounded block"
+                      >USER-AUTH</code
+                    >
+                    <code
+                      class="text-xs bg-white dark:bg-gray-700 px-2 py-1 rounded block"
+                      >PAYMENT-GATEWAY</code
+                    >
+                  </div>
                 </div>
-                <div class="border-l-4 border-secondary pl-4">
-                  <h4 class="font-semibold text-secondary">sort list</h4>
-                  <p class="text-gray-600 text-sm">
-                    Sorts list items in ascending order
-                  </p>
-                </div>
-                <div class="border-l-4 border-secondary pl-4">
-                  <h4 class="font-semibold text-secondary">reverse list</h4>
-                  <p class="text-gray-600 text-sm">
-                    Reverses the order of list items
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-md p-6">
-              <h3 class="text-xl font-semibold mb-4">Math Operations</h3>
-              <div class="space-y-4">
-                <div class="border-l-4 border-green-500 pl-4">
-                  <h4 class="font-semibold text-green-600">a plus b</h4>
-                  <p class="text-gray-600 text-sm">Addition operation</p>
-                </div>
-                <div class="border-l-4 border-green-500 pl-4">
-                  <h4 class="font-semibold text-green-600">a minus b</h4>
-                  <p class="text-gray-600 text-sm">Subtraction operation</p>
-                </div>
-                <div class="border-l-4 border-green-500 pl-4">
-                  <h4 class="font-semibold text-green-600">
-                    a multiplied by b
+                <div
+                  class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-6 rounded-xl border border-forest-200 dark:border-forest-700 text-center"
+                >
+                  <h4
+                    class="font-bold text-forest-700 dark:text-forest-300 mb-4 text-lg"
+                  >
+                    Linker Names
                   </h4>
-                  <p class="text-gray-600 text-sm">Multiplication operation</p>
+                  <p class="text-sm text-gray-700 dark:text-gray-300 mb-4">
+                    Use lowercase descriptive terms
+                  </p>
+                  <div class="space-y-2">
+                    <code
+                      class="text-xs bg-white dark:bg-gray-700 px-2 py-1 rounded block"
+                      >framework</code
+                    >
+                    <code
+                      class="text-xs bg-white dark:bg-gray-700 px-2 py-1 rounded block"
+                      >authentication</code
+                    >
+                    <code
+                      class="text-xs bg-white dark:bg-gray-700 px-2 py-1 rounded block"
+                      >database</code
+                    >
+                  </div>
                 </div>
-                <div class="border-l-4 border-green-500 pl-4">
-                  <h4 class="font-semibold text-green-600">a divided by b</h4>
-                  <p class="text-gray-600 text-sm">Division operation</p>
+                <div
+                  class="bg-gradient-to-br from-forest-50 to-forest-100 dark:from-forest-900 dark:to-forest-800 p-6 rounded-xl border border-forest-200 dark:border-forest-700 text-center"
+                >
+                  <h4
+                    class="font-bold text-forest-700 dark:text-forest-300 mb-4 text-lg"
+                  >
+                    Prompts
+                  </h4>
+                  <p class="text-sm text-gray-700 dark:text-gray-300 mb-4">
+                    Clear, actionable sentences
+                  </p>
+                  <div class="space-y-2">
+                    <code
+                      class="text-xs bg-white dark:bg-gray-700 px-2 py-1 rounded block"
+                      >"Use Django framework"</code
+                    >
+                    <code
+                      class="text-xs bg-white dark:bg-gray-700 px-2 py-1 rounded block"
+                      >"Implement OAuth2"</code
+                    >
+                  </div>
                 </div>
               </div>
             </div>
@@ -640,23 +1639,29 @@
         </section>
 
         <!-- FAQ Section -->
-        <section id="faq" class="mb-16">
-          <h2 class="text-3xl font-bold mb-6 text-gray-800">
-            Frequently Asked Questions
+        <section id="faq" class="mb-20 animate-fade-in">
+          <h2
+            class="text-4xl font-bold mb-12 text-gray-800 dark:text-gray-100 text-center"
+          >
+            ❓ Frequently Asked Questions
           </h2>
 
-          <div class="space-y-4" x-data="{ openFaq: null }">
-            <div class="bg-white rounded-lg shadow-md">
+          <div class="space-y-6" x-data="{ openFaq: null }">
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover-lift theme-transition"
+            >
               <button
                 @click="openFaq = openFaq === 1 ? null : 1"
-                class="w-full text-left p-6 focus:outline-none focus:ring-2 focus:ring-primary"
+                class="w-full text-left p-8 focus:outline-none focus:ring-2 focus:ring-forest-500 rounded-2xl"
               >
                 <div class="flex justify-between items-center">
-                  <h3 class="text-lg font-semibold">
-                    What makes HLC different from other programming languages?
+                  <h3
+                    class="text-xl font-bold text-gray-800 dark:text-gray-100"
+                  >
+                    What makes HLC different from other specification formats?
                   </h3>
                   <svg
-                    class="w-5 h-5 transform transition-transform"
+                    class="w-6 h-6 transform transition-transform text-forest-500"
                     :class="openFaq === 1 ? 'rotate-180' : ''"
                     fill="none"
                     stroke="currentColor"
@@ -671,28 +1676,35 @@
                   </svg>
                 </div>
               </button>
-              <div x-show="openFaq === 1" x-transition class="px-6 pb-6">
-                <p class="text-gray-600">
-                  HLC bridges the gap between natural language and code
-                  execution. Unlike traditional programming languages that
-                  require learning specific syntax, HLC allows you to express
-                  logic in human-readable terms while maintaining computational
-                  precision and performance.
+              <div x-show="openFaq === 1" x-transition class="px-8 pb-8">
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  HLC is specifically designed as an intermediate language
+                  between human requirements and machine code. Unlike
+                  traditional documentation formats, HLC enforces a strict
+                  hierarchical structure with mandatory Entry-Level and
+                  Top-Level objects, making it both human-readable and
+                  machine-parseable. This enables automated code generation,
+                  validation, and seamless tooling integration that other
+                  formats simply cannot provide.
                 </p>
               </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md">
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover-lift theme-transition"
+            >
               <button
                 @click="openFaq = openFaq === 2 ? null : 2"
-                class="w-full text-left p-6 focus:outline-none focus:ring-2 focus:ring-primary"
+                class="w-full text-left p-8 focus:outline-none focus:ring-2 focus:ring-forest-500 rounded-2xl"
               >
                 <div class="flex justify-between items-center">
-                  <h3 class="text-lg font-semibold">
-                    Is HLC suitable for production applications?
+                  <h3
+                    class="text-xl font-bold text-gray-800 dark:text-gray-100"
+                  >
+                    Can I use HLC for existing projects?
                   </h3>
                   <svg
-                    class="w-5 h-5 transform transition-transform"
+                    class="w-6 h-6 transform transition-transform text-forest-500"
                     :class="openFaq === 2 ? 'rotate-180' : ''"
                     fill="none"
                     stroke="currentColor"
@@ -707,29 +1719,34 @@
                   </svg>
                 </div>
               </button>
-              <div x-show="openFaq === 2" x-transition class="px-6 pb-6">
-                <p class="text-gray-600">
-                  Yes! HLC compiles to optimized machine code and includes
-                  robust error handling, type safety, and performance
-                  optimizations. Many companies are already using HLC for
-                  production systems, particularly in domains where code
-                  readability and maintainability are crucial.
+              <div x-show="openFaq === 2" x-transition class="px-8 pb-8">
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  Absolutely! HLC excels at documenting and specifying existing
+                  projects. You can create HLC specifications that describe your
+                  current architecture, then use them for comprehensive
+                  documentation, onboarding new team members, or planning future
+                  enhancements. Many teams start by creating HLC specs for their
+                  existing systems before using them for new development
+                  initiatives.
                 </p>
               </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md">
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover-lift theme-transition"
+            >
               <button
                 @click="openFaq = openFaq === 3 ? null : 3"
-                class="w-full text-left p-6 focus:outline-none focus:ring-2 focus:ring-primary"
+                class="w-full text-left p-8 focus:outline-none focus:ring-2 focus:ring-forest-500 rounded-2xl"
               >
                 <div class="flex justify-between items-center">
-                  <h3 class="text-lg font-semibold">
-                    How does HLC handle performance compared to traditional
-                    languages?
+                  <h3
+                    class="text-xl font-bold text-gray-800 dark:text-gray-100"
+                  >
+                    How deep should my hierarchy go?
                   </h3>
                   <svg
-                    class="w-5 h-5 transform transition-transform"
+                    class="w-6 h-6 transform transition-transform text-forest-500"
                     :class="openFaq === 3 ? 'rotate-180' : ''"
                     fill="none"
                     stroke="currentColor"
@@ -744,27 +1761,34 @@
                   </svg>
                 </div>
               </button>
-              <div x-show="openFaq === 3" x-transition class="px-6 pb-6">
-                <p class="text-gray-600">
-                  HLC's compiler performs advanced optimizations during the
-                  compilation process. While the source code is human-readable,
-                  the compiled output is highly optimized machine code that
-                  performs comparably to C++ or Rust in most scenarios.
+              <div x-show="openFaq === 3" x-transition class="px-8 pb-8">
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  While there's no hard technical limit, we strongly recommend
+                  keeping hierarchies to 3-5 levels deep for optimal
+                  maintainability and clarity. Deeper hierarchies can become
+                  difficult to understand and maintain. If you find yourself
+                  needing deeper nesting, consider breaking your specification
+                  into multiple related HLC files or restructuring your object
+                  relationships for better organization.
                 </p>
               </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md">
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover-lift theme-transition"
+            >
               <button
                 @click="openFaq = openFaq === 4 ? null : 4"
-                class="w-full text-left p-6 focus:outline-none focus:ring-2 focus:ring-primary"
+                class="w-full text-left p-8 focus:outline-none focus:ring-2 focus:ring-forest-500 rounded-2xl"
               >
                 <div class="flex justify-between items-center">
-                  <h3 class="text-lg font-semibold">
-                    Can I integrate HLC with existing codebases?
+                  <h3
+                    class="text-xl font-bold text-gray-800 dark:text-gray-100"
+                  >
+                    Is HLC suitable for non-technical stakeholders?
                   </h3>
                   <svg
-                    class="w-5 h-5 transform transition-transform"
+                    class="w-6 h-6 transform transition-transform text-forest-500"
                     :class="openFaq === 4 ? 'rotate-180' : ''"
                     fill="none"
                     stroke="currentColor"
@@ -779,28 +1803,34 @@
                   </svg>
                 </div>
               </button>
-              <div x-show="openFaq === 4" x-transition class="px-6 pb-6">
-                <p class="text-gray-600">
-                  Absolutely! HLC provides foreign function interfaces (FFI) for
-                  popular languages like Python, JavaScript, C++, and Java. You
-                  can gradually migrate existing code or use HLC for new
-                  features while maintaining compatibility with your current
-                  systems.
+              <div x-show="openFaq === 4" x-transition class="px-8 pb-8">
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  Yes! While HLC uses JSON syntax, the focus on natural language
+                  prompts and clear hierarchical structure makes it highly
+                  accessible to non-technical stakeholders. Product managers,
+                  business analysts, and designers can contribute meaningfully
+                  to HLC specifications by focusing on the "prompt" fields,
+                  which use plain English to describe requirements and
+                  functionality in terms everyone can understand.
                 </p>
               </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md">
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover-lift theme-transition"
+            >
               <button
                 @click="openFaq = openFaq === 5 ? null : 5"
-                class="w-full text-left p-6 focus:outline-none focus:ring-2 focus:ring-primary"
+                class="w-full text-left p-8 focus:outline-none focus:ring-2 focus:ring-forest-500 rounded-2xl"
               >
                 <div class="flex justify-between items-center">
-                  <h3 class="text-lg font-semibold">
-                    Where can I get help and support?
+                  <h3
+                    class="text-xl font-bold text-gray-800 dark:text-gray-100"
+                  >
+                    How do I get started with HLC?
                   </h3>
                   <svg
-                    class="w-5 h-5 transform transition-transform"
+                    class="w-6 h-6 transform transition-transform text-forest-500"
                     :class="openFaq === 5 ? 'rotate-180' : ''"
                     fill="none"
                     stroke="currentColor"
@@ -815,12 +1845,57 @@
                   </svg>
                 </div>
               </button>
-              <div x-show="openFaq === 5" x-transition class="px-6 pb-6">
-                <p class="text-gray-600">
-                  Join our vibrant community! We have an active Discord server,
-                  GitHub discussions, and comprehensive documentation. Our team
-                  also provides enterprise support for commercial users. Visit
-                  our community page for links to all support channels.
+              <div x-show="openFaq === 5" x-transition class="px-8 pb-8">
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  Start simple and build gradually! Begin with the mandatory
+                  two-object structure (Entry-Level and Top-Level), then
+                  incrementally add features through linkers. Use the
+                  comprehensive examples in this documentation as templates, and
+                  don't hesitate to start with basic specifications that you can
+                  expand over time. The key is to focus on clarity and
+                  meaningful descriptions in your prompts.
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover-lift theme-transition"
+            >
+              <button
+                @click="openFaq = openFaq === 6 ? null : 6"
+                class="w-full text-left p-8 focus:outline-none focus:ring-2 focus:ring-forest-500 rounded-2xl"
+              >
+                <div class="flex justify-between items-center">
+                  <h3
+                    class="text-xl font-bold text-gray-800 dark:text-gray-100"
+                  >
+                    Can HLC specifications be version controlled?
+                  </h3>
+                  <svg
+                    class="w-6 h-6 transform transition-transform text-forest-500"
+                    :class="openFaq === 6 ? 'rotate-180' : ''"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+              <div x-show="openFaq === 6" x-transition class="px-8 pb-8">
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  Absolutely! Since HLC specifications are JSON files, they work
+                  perfectly with Git and other version control systems. You can
+                  track changes, create branches for different feature
+                  specifications, merge specifications from different team
+                  members, and maintain a complete history of your project's
+                  evolution. Many teams store HLC specs alongside their code
+                  repositories for seamless integration.
                 </p>
               </div>
             </div>
